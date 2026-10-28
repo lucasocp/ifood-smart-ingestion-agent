@@ -1,0 +1,42 @@
+# Environment files and local secrets
+.env
+.env.*
+!.env.example
+!.env.template
+secrets/
+credentials/
+.secrets/
+
+# Private keys, certificates, and credential stores
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+
+# Python environments and generated files
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local databases, vector-store data, and application logs
+*.sqlite
+*.sqlite3
+*.db
+chroma/
+chroma_data/
+*.log
+
+# Local editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

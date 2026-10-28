@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  smart-ingestion-api:
+    build: .
+    container_name: ifood_smart_ingestion_api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    depends_on:
+      - chromadb
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: ifood_chromadb_service
+    ports:
+      - "127.0.0.1:8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+
+volumes:
+  chroma_data:
