@@ -26,24 +26,24 @@ Este projeto resolve esse gargalo através de um **Pipeline Inteligente Multi-Ag
 ```mermaid
 flowchart TD
     subgraph Ingestion ["1. Coleta & Ingestão"]
-        A[Cardápios Brutos & Reviews de Usuários] --> B[AsyncMenuScraper Engine]
+        A["Cardápios Brutos & Reviews de Usuários"] --> B["AsyncMenuScraper Engine"]
     end
 
     subgraph Agents ["2. Camada de Agentes Especializados"]
-        B --> C[ReviewSentimentAgent]
-        B --> D[SchemaNormalizerAgent]
-        C -->|Scores & Perfil Gustativo| D
-        D -->|Contrato Pydantic Enriquecido| E[EnrichedMenuItem Model]
+        B --> C["ReviewSentimentAgent"]
+        B --> D["SchemaNormalizerAgent"]
+        C -->|"Scores & Perfil Gustativo"| D
+        D -->|"Contrato Pydantic Enriquecido"| E["EnrichedMenuItem Model"]
     end
 
     subgraph Storage ["3. Vetorização & Indexação"]
-        E --> F[VectorIndexer / ChromaDB]
+        E --> F["VectorIndexer / ChromaDB"]
     end
 
     subgraph API ["4. Camada de Serviço & RAG"]
-        G[Usuário / App iFood] -->|Query Semântica com Filtros| H[FastAPI REST Interface]
+        G["Usuário / App iFood"] -->|"Query Semântica com Filtros"| H["FastAPI REST Interface"]
         H --> F
-        F -->|Top-K Itens Relevantes + Justificativa| G
+        F -->|"Top-K Itens Relevantes + Justificativa"| G
     end
 ```
 
