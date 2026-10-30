@@ -8,26 +8,23 @@ try:
     HAS_PYDANTIC = True
 except ImportError:
     HAS_PYDANTIC = False
-    from dataclasses import dataclass, field, asdict
+    from dataclasses import field
     from typing import Any
 
-    def Field(*args, default=..., default_factory=..., description=None, ge=None, le=None, **kwargs):
+    def Field(*args, default=..., default_factory=..., description=None, ge=None, le=None, **kwargs):  # type: ignore[no-redef]
         if default_factory is not ...:
             return field(default_factory=default_factory)
         if default is not ...:
             return field(default=default)
         return field()
 
-    class BaseModel:
+    class BaseModel:  # type: ignore[no-redef]
         def __init__(self, **kwargs):
             for k, v in kwargs.items():
                 setattr(self, k, v)
 
-        def dict(self):
-            return self.model_dump()
-
-        def model_dump(self):
-            res = {}
+        def model_dump(self) -> dict[str, Any]:
+            res: dict[str, Any] = {}
             for k, v in self.__dict__.items():
                 if isinstance(v, BaseModel):
                     res[k] = v.model_dump()
@@ -38,6 +35,9 @@ except ImportError:
                 else:
                     res[k] = v
             return res
+
+        def dict(self):
+            return self.model_dump()
 
         def __repr__(self):
             attrs = ", ".join(f"{k}={v!r}" for k, v in self.__dict__.items())

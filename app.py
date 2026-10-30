@@ -2,6 +2,7 @@
 FastAPI application for iFood Smart Ingestion Agent.
 Exposes REST endpoints for catalog ingestion, semantic RAG search, and health checks.
 """
+import os
 import sys
 from pathlib import Path
 
@@ -10,14 +11,13 @@ if root not in sys.path:
     sys.path.insert(0, root)
 
 try:
-    from fastapi import FastAPI, HTTPException
-    from pydantic import BaseModel
+    from fastapi import FastAPI
     HAS_FASTAPI = True
 except ImportError:
     HAS_FASTAPI = False
 
-from src.pipeline import SmartIngestionPipeline
 from src.models import SemanticSearchQuery
+from src.pipeline import SmartIngestionPipeline
 
 pipeline = SmartIngestionPipeline()
 # Pré-carrega o catálogo padrão na inicialização
@@ -72,7 +72,7 @@ if HAS_FASTAPI:
 if __name__ == "__main__":
     if HAS_FASTAPI:
         import uvicorn
-        uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+        uvicorn.run("app:app", host=os.getenv("HOST", "127.0.0.1"), port=8000, reload=True)
     else:
         print("[INFO] Executando em modo CLI / Standalone demonstrativo.")
         res = pipeline.search_sync(SemanticSearchQuery(query="hambúrguer artesanal bacon", top_k=1))

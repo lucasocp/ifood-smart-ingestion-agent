@@ -7,12 +7,12 @@ project_root = str(Path(__file__).resolve().parent.parent)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from typing import List
-from src.scraper.async_scraper import AsyncMenuScraper
-from src.agents.schema_normalizer import SchemaNormalizerAgent
+
 from src.agents.review_sentiment_agent import ReviewSentimentAgent
-from src.vector_store.chroma_indexer import VectorIndexer
-from src.models import EnrichedMenuItem, SemanticSearchQuery, SearchResultItem
+from src.agents.schema_normalizer import SchemaNormalizerAgent
+from src.models import EnrichedMenuItem, SearchResultItem, SemanticSearchQuery
+from src.scraper.async_scraper import AsyncMenuScraper
+from src.vector_store.vector_indexer import VectorIndexer
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("SmartIngestionPipeline")
@@ -31,11 +31,11 @@ class SmartIngestionPipeline:
         self.normalizer_agent = SchemaNormalizerAgent()
         self.vector_indexer = VectorIndexer()
 
-    def run_ingestion_sync(self, restaurant_id: str = "all") -> List[EnrichedMenuItem]:
+    def run_ingestion_sync(self, restaurant_id: str = "all") -> list[EnrichedMenuItem]:
         logger.info(f"==> Iniciando pipeline de ingestão inteligente para: {restaurant_id}")
         raw_items = self.scraper.fetch_restaurant_catalog_sync(restaurant_id)
         
-        enriched_items: List[EnrichedMenuItem] = []
+        enriched_items: list[EnrichedMenuItem] = []
         for raw in raw_items:
             sentiment = self.sentiment_agent.analyze_reviews_sync(raw.scraped_reviews)
             enriched = self.normalizer_agent.normalize_sync(raw, sentiment)
@@ -45,13 +45,13 @@ class SmartIngestionPipeline:
         logger.info(f"==> Pipeline finalizado! {len(enriched_items)} itens enriquecidos e vetorizados.")
         return enriched_items
 
-    async def run_ingestion_for_restaurant(self, restaurant_id: str = "all") -> List[EnrichedMenuItem]:
+    async def run_ingestion_for_restaurant(self, restaurant_id: str = "all") -> list[EnrichedMenuItem]:
         return self.run_ingestion_sync(restaurant_id)
 
-    def search_sync(self, query: SemanticSearchQuery) -> List[SearchResultItem]:
+    def search_sync(self, query: SemanticSearchQuery) -> list[SearchResultItem]:
         return self.vector_indexer.search_sync(query)
 
-    async def search(self, query: SemanticSearchQuery) -> List[SearchResultItem]:
+    async def search(self, query: SemanticSearchQuery) -> list[SearchResultItem]:
         return self.search_sync(query)
 
 if __name__ == "__main__":

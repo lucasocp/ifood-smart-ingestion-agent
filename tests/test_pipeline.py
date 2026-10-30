@@ -1,17 +1,18 @@
-import unittest
 import sys
+import unittest
 from pathlib import Path
 
 root = str(Path(__file__).resolve().parent.parent)
 if root not in sys.path:
     sys.path.insert(0, root)
 
-from src.models import RawMenuItem, DietaryPreference, SemanticSearchQuery
-from src.scraper.async_scraper import AsyncMenuScraper
-from src.agents.schema_normalizer import SchemaNormalizerAgent
 from src.agents.review_sentiment_agent import ReviewSentimentAgent
-from src.vector_store.chroma_indexer import VectorIndexer
+from src.agents.schema_normalizer import SchemaNormalizerAgent
+from src.models import RawMenuItem, SemanticSearchQuery
 from src.pipeline import SmartIngestionPipeline
+from src.scraper.async_scraper import AsyncMenuScraper
+from src.vector_store.vector_indexer import VectorIndexer
+
 
 class TestSmartIngestionPipeline(unittest.TestCase):
     def setUp(self):

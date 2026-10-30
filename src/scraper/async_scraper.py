@@ -1,10 +1,22 @@
 import logging
-from typing import List
+from typing import TypedDict
+
 from src.models import RawMenuItem
 
 logger = logging.getLogger("ScraperEngine")
 
-SAMPLE_SCRAPED_DATA = [
+
+class ScrapedMenuRecord(TypedDict):
+    restaurant_id: str
+    restaurant_name: str
+    raw_title: str
+    raw_description: str
+    raw_price_str: str
+    raw_category: str
+    scraped_reviews: list[str]
+
+
+SAMPLE_SCRAPED_DATA: list[ScrapedMenuRecord] = [
     {
         "restaurant_id": "rest_sp_01",
         "restaurant_name": "Cantina & Trattoria Bella Italia",
@@ -71,7 +83,7 @@ class AsyncMenuScraper:
     def __init__(self, concurrency_limit: int = 5):
         self.concurrency_limit = concurrency_limit
 
-    def fetch_restaurant_catalog_sync(self, restaurant_id: str) -> List[RawMenuItem]:
+    def fetch_restaurant_catalog_sync(self, restaurant_id: str) -> list[RawMenuItem]:
         logger.info(f"Coletando catálogo para restaurante: {restaurant_id}")
         items = []
         for raw in SAMPLE_SCRAPED_DATA:
@@ -80,10 +92,10 @@ class AsyncMenuScraper:
         logger.info(f"Coleta concluída para {restaurant_id}: {len(items)} itens extraídos.")
         return items
 
-    async def fetch_restaurant_catalog(self, restaurant_id: str) -> List[RawMenuItem]:
+    async def fetch_restaurant_catalog(self, restaurant_id: str) -> list[RawMenuItem]:
         return self.fetch_restaurant_catalog_sync(restaurant_id)
 
-    def fetch_all_partner_catalogs(self) -> List[RawMenuItem]:
+    def fetch_all_partner_catalogs(self) -> list[RawMenuItem]:
         restaurant_ids = ["rest_sp_01", "rest_ba_02", "rest_sp_03", "rest_pr_04"]
         results = []
         for rid in restaurant_ids:

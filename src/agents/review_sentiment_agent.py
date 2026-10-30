@@ -1,15 +1,16 @@
-from typing import List, Optional
+
 from src.models import ReviewSentimentSummary
+
 
 class ReviewSentimentAgent:
     """
     Agente focado em minerar avaliações não-estruturadas de consumidores
     para extrair inteligência qualitativa sobre os pratos.
     """
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: str | None = None):
         self.api_key = api_key
 
-    def analyze_reviews_sync(self, reviews: List[str]) -> ReviewSentimentSummary:
+    def analyze_reviews_sync(self, reviews: list[str]) -> ReviewSentimentSummary:
         if not reviews:
             return ReviewSentimentSummary(
                 overall_sentiment="neutro",
@@ -25,8 +26,8 @@ class ReviewSentimentAgent:
 
         pos_count = 0
         neg_count = 0
-        highlights = []
-        complaints = []
+        highlights: list[str] = []
+        complaints: list[str] = []
         taste_profile = set()
 
         for rev in reviews:
@@ -69,5 +70,5 @@ class ReviewSentimentAgent:
             taste_profile=list(taste_profile) or ["equilibrado"]
         )
 
-    async def analyze_reviews(self, reviews: List[str]) -> ReviewSentimentSummary:
+    async def analyze_reviews(self, reviews: list[str]) -> ReviewSentimentSummary:
         return self.analyze_reviews_sync(reviews)

@@ -1,7 +1,14 @@
 import re
 import uuid
-from typing import Optional
-from src.models import RawMenuItem, EnrichedMenuItem, DietaryPreference, AllergenAnalysis, ReviewSentimentSummary
+
+from src.models import (
+    AllergenAnalysis,
+    DietaryPreference,
+    EnrichedMenuItem,
+    RawMenuItem,
+    ReviewSentimentSummary,
+)
+
 
 class SchemaNormalizerAgent:
     """
@@ -9,7 +16,7 @@ class SchemaNormalizerAgent:
     em contratos canônicos estruturados (Pydantic), normalizando preços,
     identificando porções e mapeando alérgenos e restrições alimentares.
     """
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: str | None = None):
         self.api_key = api_key
 
     def _clean_price(self, raw_price_str: str) -> float:
